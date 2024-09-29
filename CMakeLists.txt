@@ -11,13 +11,20 @@ pico_sdk_init()
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(Curiosity main.c)
+set(CURIOSITY_SOURCES
+    src/wifiCtrl.c
+)
+
+add_executable(Curiosity main.c ${CURIOSITY_SOURCES})
+
+target_include_directories(Curiosity PRIVATE inc)
 
 target_link_libraries(
         Curiosity
         pico_stdlib
         FreeRTOS-Kernel
         FreeRTOS-Kernel-Heap4
+        pico_cyw43_arch_lwip_sys_freertos
 )
 
 pico_enable_stdio_usb(Curiosity 1)
