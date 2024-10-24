@@ -12,7 +12,8 @@ pico_sdk_init()
 set(CMAKE_C_STANDARD 11)
 
 set(CURIOSITY_SOURCES
-    src/wifiCtrl.c
+        src/wifiCtrl.c
+        src/status.c
 )
 
 add_executable(Curiosity main.c ${CURIOSITY_SOURCES})
