@@ -1,16 +1,16 @@
 #include "status.h"
 
-static EventGroupHandle_t houston_status_eventGroup;
+static EventGroupHandle_t curiosity_status_eventGroup;
 
-void houston_status_init() {
-    houston_status_eventGroup = xEventGroupCreate();
+void curiosity_status_init() {
+    curiosity_status_eventGroup = xEventGroupCreate();
 }
 
-void houston_status_waitStatus(EventBits_t bitsToWait) {
+void curiosity_status_waitStatus(EventBits_t bitsToWait) {
     do {
         EventBits_t wifiBit =
                 xEventGroupWaitBits(
-                    houston_status_eventGroup,
+                    curiosity_status_eventGroup,
                     bitsToWait,
                     pdFALSE,
                     pdTRUE,
@@ -23,6 +23,6 @@ void houston_status_waitStatus(EventBits_t bitsToWait) {
     } while (1);
 }
 
-void houston_status_setStatus(EventBits_t bits) {
-    xEventGroupSetBits(houston_status_eventGroup, bits);
+void curiosity_status_setStatus(EventBits_t bits) {
+    xEventGroupSetBits(curiosity_status_eventGroup, bits);
 }

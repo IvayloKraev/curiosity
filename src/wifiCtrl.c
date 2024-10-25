@@ -1,6 +1,6 @@
 #include "wifiCtrl.h"
 
-_Noreturn void huston_wifiCtrl_init(void *paramsPtr) {
+_Noreturn void curiosity_wifiCtrl_init(void *paramsPtr) {
     wifiConfigHandler_t wifiConfig = (wifiConfigHandler_t) paramsPtr;
 
     if (cyw43_arch_init_with_country(CYW43_COUNTRY_BULGARIA)) {
@@ -24,7 +24,7 @@ _Noreturn void huston_wifiCtrl_init(void *paramsPtr) {
         vTaskDelete(NULL);
     }
 
-    HOUSTON_STATUS_SET_WIFI_DONE();
+    CURIOSITY_STATUS_SET_WIFI_DONE();
 
     while (true) {
         cyw43_arch_poll();
