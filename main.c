@@ -1,4 +1,3 @@
-
 #include "pico/stdlib.h"
 #include "pico/stdio_usb.h"
 
@@ -45,7 +44,7 @@ int main(void)
            curiosity_socket_receiveData,
            "curiosity_socket_receiveData",
            configMINIMAL_STACK_SIZE,
-           &wifiConfig,
+           curiosity_message,
            tskNORMAL_PRIORITY,
            NULL
            );

@@ -11,7 +11,7 @@ printf("\n");                           \
 
 #include "hctp/messageModel.h"
 
-_Noreturn void curiosity_socket_receiveData() {
+_Noreturn void curiosity_socket_receiveData(void *params) {
     CURIOSITY_STATUS_WAIT_WIFI_DONE();
 
     const ip_addr_t *curiosityIpAddr = netif_ip4_addr(netif_default);
@@ -32,30 +32,18 @@ _Noreturn void curiosity_socket_receiveData() {
     while (1) {
         err_t m = netconn_recv(curiosityUdpConnection, &curiosityNetBuffer);
 
-        stdio_printf("netconn_recv returned %d\n", m);
-
-        if (m == ERR_OK) {
-            void *data;
-            u16_t len;
-
-            // Get the data from the netbuf
-            netbuf_data(curiosityNetBuffer, &data, &len);
-
-            printf("Received data: %i %p\n", len, (char *)data);
-
-            hctp_message_t n = data;
-
-            for(size_t i = 0; i < len; i++) {
-                PRINT_UINT8_BITS(n[i]);
-            }
-
-            // Clean up the netbuf
-            netbuf_delete(curiosityNetBuffer);
-        } else {
-            printf("Error receiving data: %d\n", m);
+        if (m != ERR_OK) {
+            stdio_printf("netconn_recv failed\n");
         }
 
+        u16_t len;
 
-        vTaskDelay(1000);
+        netbuf_data(curiosityNetBuffer, &params, &len);
+
+        for (size_t i = 0; i < len; i++) {
+            PRINT_UINT8_BITS(((hctp_message_t)params)[i]);
+        }
+
+        netbuf_delete(curiosityNetBuffer);
     }
 }
