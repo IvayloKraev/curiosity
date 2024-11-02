@@ -16,6 +16,7 @@ set(CURIOSITY_SOURCES
         src/wifiCtrl.c
         src/status.c
         src/socket.c
+        src/execute.c
 )
 
 add_executable(Curiosity main.c ${CURIOSITY_SOURCES})
@@ -29,6 +30,8 @@ target_link_libraries(
         FreeRTOS-Kernel-Heap4
         pico_cyw43_arch_lwip_sys_freertos
         hctp
+        hardware_adc
+        hardware_gpio
 )
 
 pico_enable_stdio_usb(Curiosity 1)
