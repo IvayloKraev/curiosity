@@ -9,6 +9,7 @@
 #include "common.h"
 #include "wifiCtrl.h"
 #include "socket.h"
+#include "execute.h"
 
 static wifiConfig_t wifiConfig = {
     .ssid = "Houston",
@@ -48,6 +49,15 @@ int main(void)
            tskNORMAL_PRIORITY,
            NULL
            );
+
+    xTaskCreate(
+        curiosity_execute_loop,
+        "curiosity_execute_loop",
+        configMINIMAL_STACK_SIZE,
+        curiosity_message,
+        tskNORMAL_PRIORITY,
+        NULL
+        );
 
     vTaskStartScheduler();
     return 0;
