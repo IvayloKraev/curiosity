@@ -1,13 +1,6 @@
 #include "socket.h"
 
-
-#define PRINT_UINT8_BITS(x) do {            \
-for (int _i = 7; _i >= 0; _i--) {      \
-printf("%d", ((x) >> _i) & 1);     \
-}                                       \
-printf("\n");                           \
-} while(0)
-
+#include <string.h>
 
 #include "hctp/messageModel.h"
 
@@ -15,7 +8,6 @@ _Noreturn void curiosity_socket_receiveData(void *params) {
     CURIOSITY_STATUS_WAIT_WIFI_DONE();
 
     const ip_addr_t *curiosityIpAddr = netif_ip4_addr(netif_default);
-
 
     // Creating connection
     struct netconn *curiosityUdpConnection = netconn_new(NETCONN_UDP);
@@ -36,13 +28,19 @@ _Noreturn void curiosity_socket_receiveData(void *params) {
             stdio_printf("netconn_recv failed\n");
         }
 
+        void *data;
         u16_t len;
+        netbuf_data(curiosityNetBuffer, &data, &len);
 
-        netbuf_data(curiosityNetBuffer, &params, &len);
-
-        for (size_t i = 0; i < len; i++) {
-            PRINT_UINT8_BITS(((hctp_message_t)params)[i]);
+        if(len != HCTP_MESSAGE_SIZE_BYTES) {
+            stdio_printf("netbuf_data failed\n");
+            netbuf_delete(curiosityNetBuffer);
+            continue;
         }
+
+        (void) memcpy((void *) params, (const void *) data, (size_t) HCTP_MESSAGE_SIZE_BYTES);
+
+        CURIOSITY_STATUS_SET_COMMAND();
 
         netbuf_delete(curiosityNetBuffer);
     }
