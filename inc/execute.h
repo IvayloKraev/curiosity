@@ -3,10 +3,16 @@
 
 #include <stdint.h>
 
+#include <pico/stdio_usb.h>
+
 #include <hardware/gpio.h>
 #include <hardware/adc.h>
 
 #include "hctp/messageModel.h"
+#include "hctp/control.h"
+#include "hctp/speed.h"
+
+#include "status.h"
 
 // A - left
 // B - right

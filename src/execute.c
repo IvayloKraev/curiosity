@@ -16,7 +16,24 @@ _Noreturn void curiosity_execute_loop(void *params) {
     gpio_set_dir(CURIOSITY_BACKWARD_RIGHT_PIN, GPIO_OUT);
 
     while (1) {
+        CURIOSITY_STATUS_WAIT_COMMAND();
 
+        if(hctp_control_get_leftTurn(msg)) {
+            curiosity_execute_left(hctp_speed_get(msg));
+            stdio_printf("left\n");
+        }
+        else if(hctp_control_get_rightTurn(msg)) {
+            curiosity_execute_right(hctp_speed_get(msg));
+            stdio_printf("right\n");
+        }
+        else if(hctp_control_get_stateMotors(msg)) {
+            curiosity_execute_forward(hctp_speed_get(msg));
+            stdio_printf("forward\n");
+        }
+        else {
+            curiosity_execute_stop();
+            stdio_printf("stop\n");
+        }
     }
 }
 
