@@ -6,13 +6,13 @@ void curiosity_status_init() {
     curiosity_status_eventGroup = xEventGroupCreate();
 }
 
-void curiosity_status_waitStatus(EventBits_t bitsToWait) {
+void curiosity_status_waitStatus(EventBits_t bitsToWait, BaseType_t clearOnExit) {
     do {
         EventBits_t wifiBit =
                 xEventGroupWaitBits(
                     curiosity_status_eventGroup,
                     bitsToWait,
-                    pdFALSE,
+                    clearOnExit,
                     pdTRUE,
                     portMAX_DELAY
                 );
