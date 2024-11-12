@@ -15,6 +15,25 @@ _Noreturn void curiosity_execute_loop(void *params) {
     gpio_init(CURIOSITY_BACKWARD_RIGHT_PIN);
     gpio_set_dir(CURIOSITY_BACKWARD_RIGHT_PIN, GPIO_OUT);
 
+    gpio_set_function(CURIOSITY_SPEED_LEFT_PIN, GPIO_FUNC_PWM);
+    gpio_set_function(CURIOSITY_SPEED_RIGHT_PIN, GPIO_FUNC_PWM);
+
+    // Get the PWM slices associated with the GPIO pins
+    uint speedLeftSlice = pwm_gpio_to_slice_num(CURIOSITY_SPEED_LEFT_PIN);
+    uint speedRightSlice = pwm_gpio_to_slice_num(CURIOSITY_SPEED_RIGHT_PIN);
+
+    // Configure PWM for the first pin
+    pwm_config config1 = pwm_get_default_config();
+    pwm_config_set_clkdiv(&config1, 4.0f);  // Adjust to set frequency for pin 1
+    pwm_config_set_wrap(&config1, 255);    // Set duty cycle resolution for pin 1
+    pwm_init(speedLeftSlice, &config1, true);
+
+    // Configure PWM for the second pin
+    pwm_config config2 = pwm_get_default_config();
+    pwm_config_set_clkdiv(&config2, 4.0f);  // Adjust to set frequency for pin 2
+    pwm_config_set_wrap(&config2, 255);    // Set duty cycle resolution for pin 2
+    pwm_init(speedRightSlice, &config2, true);
+
     while (1) {
         CURIOSITY_STATUS_WAIT_COMMAND();
 
@@ -77,5 +96,6 @@ void curiosity_execute_right(uint8_t speed) {
 }
 
 void curiosity_execute_speed(uint8_t speed) {
-
+    pwm_set_gpio_level(CURIOSITY_SPEED_LEFT_PIN, speed);
+    pwm_set_gpio_level(CURIOSITY_SPEED_RIGHT_PIN, speed);
 }

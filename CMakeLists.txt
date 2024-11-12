@@ -30,8 +30,8 @@ target_link_libraries(
         FreeRTOS-Kernel-Heap4
         pico_cyw43_arch_lwip_sys_freertos
         hctp
-        hardware_adc
         hardware_gpio
+        hardware_pwm
 )
 
 pico_enable_stdio_usb(Curiosity 1)

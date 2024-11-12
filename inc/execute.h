@@ -6,7 +6,7 @@
 #include <pico/stdio_usb.h>
 
 #include <hardware/gpio.h>
-#include <hardware/adc.h>
+#include <hardware/pwm.h>
 
 #include "hctp/messageModel.h"
 #include "hctp/control.h"
@@ -22,11 +22,8 @@
 #define CURIOSITY_FORWARD_RIGHT_PIN 4
 #define CURIOSITY_BACKWARD_RIGHT_PIN 5
 
-#define CURIOSITY_SPEED_LEFT_ADC 0
-#define CURIOSITY_SPEED_RIGHT_ADC 1
-
-#define CURIOSITY_SPEED_LEFT_PIN (CURIOSITY_SPEED_LEFT_ADC + 26)
-#define CURIOSITY_SPEED_RIGHT_PIN (CURIOSITY_SPEED_RIGHT_ADC + 26)
+#define CURIOSITY_SPEED_LEFT_PIN 27
+#define CURIOSITY_SPEED_RIGHT_PIN 26
 
 _Noreturn void curiosity_execute_loop(void *);
 
