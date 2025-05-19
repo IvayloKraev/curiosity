@@ -15,8 +15,6 @@ set(CMAKE_C_STANDARD 11)
 add_executable(
         curiosity
         main.c
-        src/wifiCtrl.c
-        src/status.c
         src/socket.c
         src/execute.c
 )
