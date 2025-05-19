@@ -1,12 +1,27 @@
 #include "socket.h"
 
-#include <string.h>
+_Noreturn void curiosity_socket_init() {
+#if WIFI
+    if (cyw43_arch_init_with_country(CYW43_CURRENT_COUNTRY)) {
+        stdio_printf("failed to initialise wifi\n");
+        vTaskDelete(NULL);
+    }
 
-#include "hctp/messageModel.h"
+    cyw43_arch_enable_sta_mode();
+    stdio_printf("sta mode enabled\n");
 
-_Noreturn void curiosity_socket_receiveData(void *params) {
-    CURIOSITY_STATUS_WAIT_WIFI_DONE();
+    if (cyw43_arch_wifi_connect_blocking(WIFI_SSID, WIFI_PASSWORD, WIFI_AUTH) != PICO_OK) {
+        stdio_printf("failed to connect to ap\n");
+    }
+#elif BT
 
+#elif RADIO
+
+#endif
+        vTaskDelete(NULL);
+}
+
+_Noreturn void curiosity_socket_receive() {
     const ip_addr_t *curiosityIpAddr = netif_ip4_addr(netif_default);
 
     // Creating connection
