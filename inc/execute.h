@@ -8,11 +8,10 @@
 #include <hardware/gpio.h>
 #include <hardware/pwm.h>
 
-#include "hctp/messageModel.h"
-#include "hctp/control.h"
-#include "hctp/speed.h"
+#include <hcst/message.h>
+#include <hcst/state.h>
 
-#include "status.h"
+#include "common.h"
 
 // A - left
 // B - right
@@ -25,13 +24,7 @@
 #define CURIOSITY_SPEED_LEFT_PIN 27
 #define CURIOSITY_SPEED_RIGHT_PIN 26
 
+_Noreturn void curiosity_execute_init();
 _Noreturn void curiosity_execute_loop(void *);
-
-void curiosity_execute_forward(uint8_t);
-void curiosity_execute_stop();
-void curiosity_execute_left(uint8_t);
-void curiosity_execute_right(uint8_t);
-void curiosity_execute_speed(uint8_t);
-
 
 #endif

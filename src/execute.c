@@ -1,8 +1,6 @@
 #include "execute.h"
 
-_Noreturn void curiosity_execute_loop(void *params) {
-    hctp_message_t msg = (hctp_message_t)params;
-
+_Noreturn void curiosity_execute_init() {
     gpio_init(CURIOSITY_FORWARD_LEFT_PIN);
     gpio_set_dir(CURIOSITY_FORWARD_LEFT_PIN, GPIO_OUT);
 
@@ -33,69 +31,30 @@ _Noreturn void curiosity_execute_loop(void *params) {
     pwm_config_set_clkdiv(&config2, 4.0f);  // Adjust to set frequency for pin 2
     pwm_config_set_wrap(&config2, 255);    // Set duty cycle resolution for pin 2
     pwm_init(speedRightSlice, &config2, true);
+}
+
+_Noreturn void curiosity_execute_loop(void *params) {
+    const receiveMessageFn_t receive = params;
 
     while (1) {
-        CURIOSITY_STATUS_WAIT_COMMAND();
+        hcst_message_t message;
+        hcst_MESSAGE_INIT(message);
+        const BaseType_t receiveStatus = receive(message);
 
-        if(hctp_control_get_leftTurn(msg)) {
-            curiosity_execute_left(hctp_speed_get(msg));
-            stdio_printf("left\n");
+        if(receiveStatus == pdPASS) {
+            continue;
         }
-        else if(hctp_control_get_rightTurn(msg)) {
-            curiosity_execute_right(hctp_speed_get(msg));
-            stdio_printf("right\n");
-        }
-        else if(hctp_control_get_stateMotors(msg)) {
-            curiosity_execute_forward(hctp_speed_get(msg));
-            stdio_printf("forward\n");
-        }
-        else {
-            curiosity_execute_stop();
-            stdio_printf("stop\n");
-        }
+
+        const bool flmPowered = hcst_powerMotor_get(message, hcst_FLM_BIT);
+        const bool frmPowered = hcst_powerMotor_get(message, hcst_FRM_BIT);
+        const bool rlmPowered = hcst_powerMotor_get(message, hcst_RLM_BIT);
+        const bool rrmPowered = hcst_powerMotor_get(message, hcst_RRM_BIT);
+
+        const bool flmDirection = hcst_directionMotor_get(message, hcst_FLM_BIT);
+        const bool frmDirection = hcst_directionMotor_get(message, hcst_FRM_BIT);
+        const bool rlmDirection = hcst_directionMotor_get(message, hcst_RLM_BIT);
+        const bool rrmDirection = hcst_directionMotor_get(message, hcst_RRM_BIT);
+
+        const uint8_t speed = hcst_speed_get(message);
     }
-}
-
-
-void curiosity_execute_forward(uint8_t speed) {
-    gpio_put(CURIOSITY_BACKWARD_LEFT_PIN, 0);
-    gpio_put(CURIOSITY_BACKWARD_RIGHT_PIN, 0);
-
-    gpio_put(CURIOSITY_FORWARD_LEFT_PIN, 1);
-    gpio_put(CURIOSITY_FORWARD_RIGHT_PIN, 1);
-
-    curiosity_execute_speed(speed);
-}
-void curiosity_execute_stop() {
-    gpio_put(CURIOSITY_FORWARD_LEFT_PIN, 0);
-    gpio_put(CURIOSITY_FORWARD_RIGHT_PIN, 0);
-
-    gpio_put(CURIOSITY_BACKWARD_LEFT_PIN, 1);
-    gpio_put(CURIOSITY_BACKWARD_RIGHT_PIN, 1);
-
-    curiosity_execute_speed(0);
-}
-void curiosity_execute_left(uint8_t speed) {
-    gpio_put(CURIOSITY_BACKWARD_RIGHT_PIN, 0);
-    gpio_put(CURIOSITY_FORWARD_LEFT_PIN, 0);
-
-    gpio_put(CURIOSITY_FORWARD_RIGHT_PIN, 1);
-    gpio_put(CURIOSITY_BACKWARD_LEFT_PIN, 1);
-
-    curiosity_execute_speed(speed);
-}
-
-void curiosity_execute_right(uint8_t speed) {
-    gpio_put(CURIOSITY_FORWARD_RIGHT_PIN, 0);
-    gpio_put(CURIOSITY_BACKWARD_LEFT_PIN, 0);
-
-    gpio_put(CURIOSITY_BACKWARD_RIGHT_PIN, 1);
-    gpio_put(CURIOSITY_FORWARD_LEFT_PIN, 1);
-
-    curiosity_execute_speed(speed);
-}
-
-void curiosity_execute_speed(uint8_t speed) {
-    pwm_set_gpio_level(CURIOSITY_SPEED_LEFT_PIN, speed);
-    pwm_set_gpio_level(CURIOSITY_SPEED_RIGHT_PIN, speed);
 }
