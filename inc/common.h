@@ -1,7 +1,9 @@
 #ifndef CURIOSITY_COMMON_H
 #define CURIOSITY_COMMON_H
 
-#define tskNORMAL_PRIORITY 1
-#define tskCRUCIAL_PRIORITY ((configMAX_PRIORITIES - 1) | portPRIVILEGE_BIT)
+#include <FreeRTOS.h>
+#include <hcst/message.h>
+
+typedef BaseType_t (*receiveMessageFn_t)(hcst_message_t);
 
 #endif
