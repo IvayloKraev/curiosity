@@ -10,6 +10,7 @@
 
 #include <hcst/message.h>
 #include <hcst/state.h>
+#include "hcst/error.h"
 
 #include "common.h"
 
@@ -24,7 +25,7 @@
 #define CURIOSITY_SPEED_LEFT_PIN 27
 #define CURIOSITY_SPEED_RIGHT_PIN 26
 
-_Noreturn void curiosity_execute_init();
-_Noreturn void curiosity_execute_loop(void *);
+static hcst_error_t curiosity_execute_init();
+static hcst_error_t curiosity_execute_tick(hcst_message_t);
 
 #endif
